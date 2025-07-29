@@ -1,77 +1,151 @@
 package com.example.attendence_tracker;
 
-import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.DatePicker;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.example.attendence_tracker.Model.PeriodInstance;
+import com.example.attendence_tracker.Model.AttendanceInstance;
+import com.example.attendence_tracker.Model.TeacherInstance;
+import com.example.attendence_tracker.Model.TimeTableEntry;
+import com.example.attendence_tracker.RetrofitService.RetroFitService;
+import com.example.attendence_tracker.RetrofitService.TimeTableAPI;
+import com.example.attendence_tracker.RetrofitService.AttendanceAPI;
 
-import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ViewAttendanceActivity extends AppCompatActivity {
-
-    private TextInputEditText editTextDate;
+    private RecyclerView recyclerViewPeriods;
+    private DateCardAdapter dateCardAdapter;
     private RecyclerView attendanceRecyclerView;
-    private AttendanceAdapter attendanceAdapter;
+    private ViewAttendanceAdapter viewAttendanceAdapter;
+    private int courseID;
+    private ArrayList<PeriodInstance> periodList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_attendance);
 
-        // Initialize views
-        editTextDate = findViewById(R.id.editTextDate);
+        // Session validation
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        String teacherName = prefs.getString("teacherName", null);
+        int teacherID = prefs.getInt("teacherID", -1);
+
+        if (!isLoggedIn || teacherName == null || teacherID == -1) {
+            Intent intent = new Intent(ViewAttendanceActivity.this, TeacherLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        recyclerViewPeriods = findViewById(R.id.recyclerViewDates);
+        recyclerViewPeriods.setLayoutManager(new LinearLayoutManager(this));
+        dateCardAdapter = new DateCardAdapter();
+        recyclerViewPeriods.setAdapter(dateCardAdapter);
+
         attendanceRecyclerView = findViewById(R.id.attendanceRecyclerView);
-
-        // Set up RecyclerView
         attendanceRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        attendanceAdapter = new AttendanceAdapter();
-        attendanceRecyclerView.setAdapter(attendanceAdapter);
+        viewAttendanceAdapter = new ViewAttendanceAdapter();
+        attendanceRecyclerView.setAdapter(viewAttendanceAdapter);
+        attendanceRecyclerView.setVisibility(View.GONE);
 
-        // On click show date picker
-        editTextDate.setOnClickListener(view -> showDatePickerDialog());
+        courseID = getIntent().getIntExtra("courseID", -1);
+        if (courseID == -1) {
+            Toast.makeText(this, "No course selected", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        fetchPeriodsForCourse();
     }
 
-    private void showDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                ViewAttendanceActivity.this,
-                (DatePicker view, int year, int month, int dayOfMonth) -> {
-                    calendar.set(year, month, dayOfMonth);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                    String selectedDate = sdf.format(calendar.getTime());
-
-                    editTextDate.setText(selectedDate);
-                    fetchAttendanceData(selectedDate);
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-
-        datePickerDialog.show();
+    private void fetchPeriodsForCourse() {
+        TeacherInstance teacher = TeacherDataStore.getCurrentTeacher();
+        if (teacher == null) return;
+        RetroFitService retroFitService = new RetroFitService();
+        TimeTableAPI timeTableAPI = retroFitService.getRetrofit().create(TimeTableAPI.class);
+        timeTableAPI.getCoursePeriods(teacher.getTeacherID(), courseID).enqueue(new Callback<List<TimeTableEntry>>() {
+            @Override
+            public void onResponse(Call<List<TimeTableEntry>> call, Response<List<TimeTableEntry>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    periodList = new ArrayList<>();
+                    for (TimeTableEntry entry : response.body()) {
+                        List<LocalDate> last10Dates = getLastNDatesForDay(entry.getDayOfWeek(), 10);
+                        for (LocalDate date : last10Dates) {
+                            periodList.add(new PeriodInstance(date.toString(), entry.getStartTime(), entry.getEndTime()));
+                        }
+                    }
+                    dateCardAdapter.setData(periodList, null, period -> {
+                        fetchAndShowAttendanceForPeriod(period);
+                    });
+                } else {
+                    Toast.makeText(ViewAttendanceActivity.this, "No periods found for this course", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<TimeTableEntry>> call, Throwable t) {
+                Toast.makeText(ViewAttendanceActivity.this, "Failed to load periods", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void fetchAttendanceData(String date) {
-        // TODO: Replace this dummy list with a real API call (Retrofit)
-        Toast.makeText(this, "Fetching attendance for " + date, Toast.LENGTH_SHORT).show();
+    private void fetchAndShowAttendanceForPeriod(PeriodInstance period) {
+        // Hide period cards, show attendance list
+        recyclerViewPeriods.setVisibility(View.GONE);
+        attendanceRecyclerView.setVisibility(View.VISIBLE);
+        // Fetch attendance for the selected course and period
+        RetroFitService retroFitService = new RetroFitService();
+        AttendanceAPI attendanceAPI = retroFitService.getRetrofit().create(AttendanceAPI.class);
+        attendanceAPI.RetrieveFromDate(period.getDate()).enqueue(new Callback<List<AttendanceInstance>>() {
+            @Override
+            public void onResponse(Call<List<AttendanceInstance>> call, Response<List<AttendanceInstance>> response) {
+                List<AttendanceInstance> attendanceInstances = response.body();
+                List<AttendanceRecord> attendanceRecordList = new ArrayList<>();
+                if (attendanceInstances != null) {
+                    for (AttendanceInstance attendanceInstance : attendanceInstances) {
+                        if (attendanceInstance.getCourseID() == courseID) {
+                            AttendanceRecord attendanceRecord = new AttendanceRecord(
+                                    attendanceInstance.getStudentName(),
+                                    attendanceInstance.isAttendanceStatus() ? "Present" : "Absent");
+                            attendanceRecordList.add(attendanceRecord);
+                        }
+                    }
+                }
+                viewAttendanceAdapter.setData(attendanceRecordList);
+            }
+            @Override
+            public void onFailure(Call<List<AttendanceInstance>> call, Throwable t) {
+                Toast.makeText(ViewAttendanceActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
-        // Dummy data for now
-        List<AttendanceRecord> dummyList = new ArrayList<>();
-        dummyList.add(new AttendanceRecord("Harish M", "Present"));
-        dummyList.add(new AttendanceRecord("Divya R", "Absent"));
-        dummyList.add(new AttendanceRecord("Rahul K", "Present"));
-
-        attendanceAdapter.setData(dummyList);
+    private List<LocalDate> getLastNDatesForDay(String dayOfWeekStr, int n) {
+        List<LocalDate> dates = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        LocalDate d = today;
+        DayOfWeek dayOfWeek = DayOfWeek.valueOf(dayOfWeekStr.toUpperCase());
+        while (dates.size() < n) {
+            if (d.getDayOfWeek() == dayOfWeek && !d.isAfter(today)) {
+                dates.add(d);
+            }
+            d = d.minusDays(1);
+        }
+        return dates;
     }
 }

@@ -40,5 +40,14 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     implementation ("com.airbnb.android:lottie:6.1.0")
-
+// https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+// https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+// https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-scalars
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation ("androidx.recyclerview:recyclerview:1.1.0")
+    implementation ("androidx.recyclerview:recyclerview-selection:1.1.0")
+    // HTTP logging interceptor for debugging
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 }
