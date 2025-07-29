@@ -1,6 +1,7 @@
 package com.example.attendence_tracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.google.android.material.button.MaterialButton;
@@ -31,7 +32,16 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         btnLogout.setOnClickListener(v -> {
+            // Clear in-memory teacher data
             TeacherDataStore.clear();
+            
+            // Clear SharedPreferences
+            SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.apply();
+            
+            // Navigate to login screen and clear activity stack
             Intent intent = new Intent(ProfileActivity.this, TeacherLoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

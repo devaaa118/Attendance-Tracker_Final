@@ -1,16 +1,21 @@
 package com.example.attendence_tracker.Model;
 
 public class StudentInstance {
-    private int studentID;
+    private String studentID;
     private String studentName;
+
+    public StudentInstance(String studentID, String studentName) {
+        this.studentID = studentID;
+        this.studentName = studentName;
+    }
 
     public String getName() {
         return studentName;
-
     }
 
-    public int getStudentId() {
+    public String getStudentId() {
         return studentID;
-
     }
 }
+
+

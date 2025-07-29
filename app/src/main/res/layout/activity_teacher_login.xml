@@ -36,7 +36,7 @@
                 android:id="@+id/loginHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Teacher Login"
+                android:text="Staff Login"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@color/header_text"
@@ -47,7 +47,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome! Please sign in to continue."
+                android:text="Sign in as Teacher or Admin"
                 android:textSize="16sp"
                 android:textColor="@color/text_dark"
                 android:gravity="center"

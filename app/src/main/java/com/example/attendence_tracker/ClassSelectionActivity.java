@@ -27,6 +27,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.content.SharedPreferences;
+import com.example.attendence_tracker.TeacherLoginActivity;
+
 public class ClassSelectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ClassAdapter adapter;
@@ -36,6 +39,19 @@ public class ClassSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_selection);
+
+        // Session validation
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        String teacherName = prefs.getString("teacherName", null);
+        int teacherID = prefs.getInt("teacherID", -1);
+
+        if (!isLoggedIn || teacherName == null || teacherID == -1) {
+            Intent intent = new Intent(ClassSelectionActivity.this, TeacherLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         recyclerView = findViewById(R.id.recycler_view);
         adapter = new ClassAdapter(new ClassAdapter.OnItemClickListener() {

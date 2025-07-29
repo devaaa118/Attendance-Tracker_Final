@@ -35,7 +35,7 @@ public class RetroFitService {
                 .build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://attendance-tracker-backend-ej1a.onrender.com") // TODO: Replace with your actual Render backend URL
+                .baseUrl("http://192.168.1.104:8080/") // Localhost for Android emulator
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson)) // handles JSON with correct date format
                 .addConverterFactory(ScalarsConverterFactory.create()) // handles plain text like "Student added"

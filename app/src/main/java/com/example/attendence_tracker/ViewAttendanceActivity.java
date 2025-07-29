@@ -1,5 +1,7 @@
 package com.example.attendence_tracker;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -11,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.attendence_tracker.Model.PeriodInstance;
 import com.example.attendence_tracker.Model.AttendanceInstance;
-import com.example.attendence_tracker.Model.TimeTableEntry;
 import com.example.attendence_tracker.Model.TeacherInstance;
+import com.example.attendence_tracker.Model.TimeTableEntry;
 import com.example.attendence_tracker.RetrofitService.RetroFitService;
 import com.example.attendence_tracker.RetrofitService.TimeTableAPI;
 import com.example.attendence_tracker.RetrofitService.AttendanceAPI;
@@ -39,6 +41,19 @@ public class ViewAttendanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_attendance);
 
+        // Session validation
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        String teacherName = prefs.getString("teacherName", null);
+        int teacherID = prefs.getInt("teacherID", -1);
+
+        if (!isLoggedIn || teacherName == null || teacherID == -1) {
+            Intent intent = new Intent(ViewAttendanceActivity.this, TeacherLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         recyclerViewPeriods = findViewById(R.id.recyclerViewDates);
         recyclerViewPeriods.setLayoutManager(new LinearLayoutManager(this));
         dateCardAdapter = new DateCardAdapter();
@@ -50,7 +65,6 @@ public class ViewAttendanceActivity extends AppCompatActivity {
         attendanceRecyclerView.setAdapter(viewAttendanceAdapter);
         attendanceRecyclerView.setVisibility(View.GONE);
 
-        // Get courseID from intent or selection (for demo, hardcode or get from intent)
         courseID = getIntent().getIntExtra("courseID", -1);
         if (courseID == -1) {
             Toast.makeText(this, "No course selected", Toast.LENGTH_SHORT).show();

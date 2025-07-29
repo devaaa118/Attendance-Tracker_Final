@@ -2,10 +2,13 @@ package com.example.attendence_tracker.RetrofitService;
 
 import com.example.attendence_tracker.Model.TimeTableEntry;
 
+
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface TimeTableAPI {
@@ -14,4 +17,8 @@ public interface TimeTableAPI {
 
     @GET("/teacher/{teacherID}/course/{courseID}/timetable")
     Call<List<TimeTableEntry>> getCoursePeriods(@Path("teacherID") int teacherID, @Path("courseID") int courseID);
-} 
+    @POST("/timetable/assign")
+    Call<Void> assignTimetable(@Body TimeTableEntry entry);
+
+}
+

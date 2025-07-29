@@ -21,15 +21,15 @@ import java.util.Locale;
 
 public class AttendanceMarkAdapter extends RecyclerView.Adapter<AttendanceMarkAdapter.ViewHolder> {
 
-    private List<StudentInstance> studentList;
     private List<AttendanceInstance> attendanceList;
+
+    // ✅ Constructor for fresh marking
     public AttendanceMarkAdapter(List<StudentInstance> studentList, int courseID) {
-        this.studentList = studentList;
         this.attendanceList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String today = sdf.format(new Date());
 
-        for(StudentInstance studentInstance : studentList){
+        for (StudentInstance studentInstance : studentList) {
             AttendanceInstance attendanceInstance = new AttendanceInstance();
             attendanceInstance.setStudentID(studentInstance.getStudentId());
             attendanceInstance.setAttendanceStatus(false);
@@ -38,7 +38,12 @@ public class AttendanceMarkAdapter extends RecyclerView.Adapter<AttendanceMarkAd
             attendanceInstance.setCourseID(courseID);
             attendanceList.add(attendanceInstance);
         }
+    }
 
+    // ✅ Constructor for updating already marked attendance
+    public AttendanceMarkAdapter(List<AttendanceInstance> attendanceList, int courseID, String date) {
+        this.attendanceList = attendanceList;
+        // courseID and date are optional here if needed later
     }
 
     public List<AttendanceInstance> getattendanceList() {
@@ -85,6 +90,7 @@ public class AttendanceMarkAdapter extends RecyclerView.Adapter<AttendanceMarkAd
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView studentName, statusText;
         CheckBox checkBox;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             studentName = itemView.findViewById(R.id.tvStudentName);

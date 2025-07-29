@@ -8,6 +8,7 @@ public class TeacherInstance {
     private String teacherEmail;
     private String teacherPassword;
     private List<CourseInstance> courses;
+    private String role; // "admin" or "teacher"
 
     public TeacherInstance() {
     }
@@ -19,12 +20,29 @@ public class TeacherInstance {
         this.teacherPassword = teacherPassword;
     }
 
+    public TeacherInstance(int teacherID, String teacherName, String teacherEmail, String teacherPassword, String role) {
+        this.teacherID = teacherID;
+        this.teacherName = teacherName;
+        this.teacherEmail = teacherEmail;
+        this.teacherPassword = teacherPassword;
+        this.role = role;
+    }
+
     public TeacherInstance(int teacherID, String teacherName, String teacherEmail, String teacherPassword, List<CourseInstance> courses) {
         this.teacherID = teacherID;
         this.teacherName = teacherName;
         this.teacherEmail = teacherEmail;
         this.teacherPassword = teacherPassword;
         this.courses = courses;
+    }
+
+    public TeacherInstance(int teacherID, String teacherName, String teacherEmail, String teacherPassword, List<CourseInstance> courses, String role) {
+        this.teacherID = teacherID;
+        this.teacherName = teacherName;
+        this.teacherEmail = teacherEmail;
+        this.teacherPassword = teacherPassword;
+        this.courses = courses;
+        this.role = role;
     }
 
     public int getTeacherID() {
@@ -65,5 +83,13 @@ public class TeacherInstance {
 
     public void setCourses(List<CourseInstance> courses) {
         this.courses = courses;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 } 

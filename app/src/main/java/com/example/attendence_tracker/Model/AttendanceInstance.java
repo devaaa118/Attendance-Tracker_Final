@@ -4,12 +4,12 @@ import java.util.Date;
 
 public class AttendanceInstance {
     private Integer attendanceID;
-    private int studentID;
+    private String studentID;
     private boolean attendanceStatus;
     private String attendanceDate;
     private int courseID;
     private String studentName;
-    public AttendanceInstance(int attendanceID, int studentID, Date attendanceDate, boolean attendanceStatus ,String studentName, int courseID) {
+    public AttendanceInstance(int attendanceID, String studentID, Date attendanceDate, boolean attendanceStatus ,String studentName, int courseID) {
         this.attendanceStatus = attendanceStatus;
         this.studentID = studentID;
         this.attendanceDate = String.valueOf(attendanceDate);
@@ -66,11 +66,11 @@ public class AttendanceInstance {
         this.attendanceStatus = attendanceStatus;
     }
 
-    public int getStudentID() {
+    public String getStudentID() {
         return studentID;
     }
 
-    public void setStudentID(int studentID) {
+    public void setStudentID(String studentID) {
         this.studentID = studentID;
     }
 }

@@ -11,11 +11,12 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface TeacherAPI {
 
     @POST("/teacher/login")
-    Call<TeacherInstance> loginTeacher(@Body Map<String, String> credentials);
+    Call<TeacherInstance> loginTeacher(@Body java.util.Map<String, String> credentials);
 
     @GET("/teacher/{teacherID}/teacherCourses")
     Call<List<CourseInstance>> getTeacherCourses(@Path("teacherID") int teacherID);
@@ -25,4 +26,14 @@ public interface TeacherAPI {
 
     @GET("/teacher/getTeacherWithCourses/{teacherID}")
     Call<TeacherInstance> getTeacherWithCourses(@Path("teacherID") int teacherID);
-} 
+
+    @GET("/teacher/getAllTeachers")
+    Call<List<TeacherInstance>> getAllTeachers();
+
+    @POST("/teacher/add")
+    Call<TeacherInstance> addTeacher(@Body TeacherInstance teacher, @Query("adminEmail") String adminEmail);
+
+    @POST("/teacher/{teacherId}/assignCourses")
+    Call<Void> assignCoursesToTeacher(@Path("teacherId") int teacherId, @Body List<Integer> courseIds);
+
+}

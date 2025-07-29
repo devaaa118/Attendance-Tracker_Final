@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context=".AdminPanelActivity"
     android:background="@color/background_light">
 
     <androidx.appcompat.widget.Toolbar
@@ -32,7 +32,7 @@
             <!-- Welcome Text -->
             <TextView
                 android:id="@+id/welcomeText"
-                android:text="Hey 👋 Harish!"
+                android:text="Hey 👋 Admin!"
                 android:textSize="26sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_dark"
@@ -41,7 +41,7 @@
                 android:paddingBottom="8dp" />
 
             <TextView
-                android:text="Let's manage attendance today!"
+                android:text="Let's manage the institution today!"
                 android:textSize="16sp"
                 android:textColor="@color/text_dark"
                 android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                             android:id="@+id/quoteText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Teaching is the one profession that creates all other professions."
+                            android:text="Leadership is not a position or a title, it is action and example."
                             android:textSize="18sp"
                             android:textColor="#00897B"
                             android:textStyle="italic"
@@ -96,7 +96,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Have a nice day!"
+                            android:text="Empower your staff and students!"
                             android:textSize="14sp"
                             android:textColor="#444"
                             android:gravity="center"
@@ -105,11 +105,11 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Action Buttons -->
+            <!-- Admin Action Buttons -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnMarkAttendance"
+                android:id="@+id/btnAddStudent"
                 style="@style/Widget.MaterialComponents.Button"
-                android:text="🎯 Mark Attendance"
+                android:text="👨‍🎓 Add Student"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#00897B"
                 app:cornerRadius="32dp"
@@ -122,8 +122,8 @@
                 app:elevation="4dp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnViewAttendance"
-                android:text="📜 View Attendance"
+                android:id="@+id/btnAddTeacher"
+                android:text="👨‍🏫 Add Teacher"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#00897B"
                 app:cornerRadius="32dp"
@@ -136,8 +136,8 @@
                 app:elevation="4dp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnStudentList"
-                android:text="👨‍🎓 Student List"
+                android:id="@+id/btnAddCourse"
+                android:text="📚 Add Course"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#00897B"
                 app:cornerRadius="32dp"
@@ -148,9 +148,10 @@
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
                 app:elevation="4dp" />
+
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnViewTimetable"
-                android:text="👨View Timetable"
+                android:id="@+id/btnAssignCourses"
+                android:text="🔗 Assign Courses"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#00897B"
                 app:cornerRadius="32dp"
@@ -162,12 +163,36 @@
                 app:iconPadding="8dp"
                 app:elevation="4dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAssignTimetable"
+                android:text="📅 Assign Timetable"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#00897B"
+                app:cornerRadius="32dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_launcher_foreground"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:elevation="4dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🚪 Logout"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#F44336"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                app:icon="@android:drawable/ic_lock_power_off"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:cornerRadius="32dp"
+                app:elevation="4dp"
+                android:gravity="center" />
 
-            <!-- Removed the old logout button here -->
         </LinearLayout>
     </ScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
+</androidx.coordinatorlayout.widget.CoordinatorLayout> 

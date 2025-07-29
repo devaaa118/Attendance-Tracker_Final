@@ -1,5 +1,7 @@
 package com.example.attendence_tracker;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -27,6 +29,19 @@ public class TimeTableActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_table);
+
+        // Session validation
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        String teacherName = prefs.getString("teacherName", null);
+        int teacherID = prefs.getInt("teacherID", -1);
+
+        if (!isLoggedIn || teacherName == null || teacherID == -1) {
+            Intent intent = new Intent(TimeTableActivity.this, TeacherLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         recyclerViewTimeTable = findViewById(R.id.recyclerViewTimeTable);
         recyclerViewTimeTable.setLayoutManager(new LinearLayoutManager(this));

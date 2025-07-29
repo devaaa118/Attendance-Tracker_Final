@@ -29,14 +29,21 @@
         </activity>
 
         <!-- Other Activities -->
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".ClassSelectionActivity" />
+
+        <activity android:name=".TimeTableActivity" />
+        <activity android:name=".AssignTimeTableActivity" />
+        <activity android:name=".AdminPanelActivity" />
+        <activity android:name=".AddTeacherActivity" />
+        <activity android:name=".AddStudentActivity" />
+        <activity android:name=".AddCourseActivity" />
+        <activity android:name=".ReportActivity" />
         <activity android:name=".MarkAttendanceActivity" />
         <activity android:name=".StudentListActivity" />
         <activity android:name=".ViewAttendanceActivity" />
-        <activity android:name=".ReportActivity" />
-        <activity android:name=".TimeTableActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".ClassSelectionActivity" />
+        <activity android:name=".AssignCoursesActivity" />
 
     </application>
 </manifest>
